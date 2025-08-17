@@ -1,27 +1,46 @@
+"use client";
 import React from "react";
+import ProtectedRoute from "@/components/ProtectedRoute";
 
-export default function LoginPage() {
+export default function ProfilPage() {
+  const user = {
+    nom: "Farah Ben Driss",
+    email: "test@mail.com",
+    statut: "Auto-entrepreneur",
+    dateInscription: "12 juin 2025",
+  };
+
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <form className="bg-white shadow-md rounded px-8 pt-6 pb-8 w-full max-w-sm">
-        <h2 className="text-2xl font-bold mb-6 text-center">Connexion</h2>
-        <input
-          type="email"
-          placeholder="Email"
-          className="mb-4 w-full px-4 py-2 border rounded"
-        />
-        <input
-          type="password"
-          placeholder="Mot de passe"
-          className="mb-6 w-full px-4 py-2 border rounded"
-        />
-        <button
-          type="submit"
-          className="bg-blue-600 text-white w-full py-2 rounded hover:bg-blue-700"
-        >
-          Se connecter
-        </button>
-      </form>
-    </div>
+    <ProtectedRoute>
+      <div>
+        <h1 className="text-3xl font-bold mb-6">Mon Profil</h1>
+
+        <div className="bg-white p-6 rounded-xl shadow-md w-full max-w-2xl">
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-600">Nom</label>
+            <p className="text-lg text-gray-800">{user.nom}</p>
+          </div>
+
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-600">Email</label>
+            <p className="text-lg text-gray-800">{user.email}</p>
+          </div>
+
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-600">Statut</label>
+            <p className="text-lg text-gray-800">{user.statut}</p>
+          </div>
+
+          <div className="mb-6">
+            <label className="block text-sm font-medium text-gray-600">Date d'inscription</label>
+            <p className="text-lg text-gray-800">{user.dateInscription}</p>
+          </div>
+
+          <button className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">
+            Modifier mes informations
+          </button>
+        </div>
+      </div>
+    </ProtectedRoute>
   );
 }

@@ -1,7 +1,10 @@
+"use client";
 import React from "react";
+import ProtectedRoute from "@/components/ProtectedRoute";
 
 export default function FacturationPage() {
   return (
+    <ProtectedRoute>
     <div>
       <h2 className="text-2xl font-bold mb-4">Mes factures</h2>
 
@@ -41,5 +44,6 @@ export default function FacturationPage() {
         </table>
       </div>
     </div>
+    </ProtectedRoute>
   );
 }

@@ -1,10 +1,19 @@
-import React from "react";
+'use client';
+import { useEffect } from 'react';
+import { useAuth } from '@/contexts/AuthContext';
+import { useRouter } from 'next/navigation';
 
 export default function Home() {
-  return (
-    <div className="p-6">
-      <h1 className="text-3xl font-bold mb-4">Bienvenue sur AutoZen 🚀</h1>
-      <p>Votre assistant personnel pour gérer votre activité d’auto-entrepreneur.</p>
-    </div>
-  );
+  const { user } = useAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (user) {
+      router.push('/dashboard');
+    } else {
+      router.push('/login');
+    }
+  }, [user]);
+
+  return null;
 }
