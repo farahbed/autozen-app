@@ -1,0 +1,36 @@
+name: Déploiement AutoZen sur EC2
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout du code
+        uses: actions/checkout@v3
+
+      - name: Copie des fichiers sur le serveur EC2
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ubuntu
+          key: ${{ secrets.EC2_SSH_KEY }}
+          source: "."
+          target: "~/autozen-app"
+
+      - name: Déploiement sur EC2 via SSH
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ubuntu
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            cd ~/autozen-app
+            docker stop autozen || true
+            docker rm autozen || true
+            docker build -t autozen-frontend .
+            docker run -d -p 80:3000 --name autozen autozen-frontend
