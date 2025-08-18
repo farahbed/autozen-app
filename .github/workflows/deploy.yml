@@ -30,7 +30,7 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
             cd ~/autozen-app
-            docker stop autozen || true
-            docker rm autozen || true
-            docker build -t autozen-frontend .
-            docker run -d -p 80:3000 --name autozen autozen-frontend
+            sudo docker stop autozen || true
+            sudo docker rm autozen || true
+            sudo docker build -t autozen-frontend .
+            sudo docker run -d -p 80:3000 --name autozen autozen-frontend
