@@ -4,12 +4,12 @@ FROM node:20-alpine AS builder
 WORKDIR /app
 
 COPY package*.json ./
-COPY . .
-
 RUN npm install
+
+COPY . .
 RUN npm run build
 
-# Étape 2 : Exécution de l'app avec un serveur optimisé
+# Étape 2 : Production
 FROM node:20-alpine
 
 WORKDIR /app

@@ -5,3 +5,5 @@ npm-debug.log
 .dockerignore
 Dockerfile
 README.md
+.gitignore
+.env
