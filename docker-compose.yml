@@ -3,25 +3,23 @@ services:
     build: .
     ports:
       - "3000:3000"
-    environment:
-      - NODE_ENV=production
-      - DATABASE_URL=postgresql://autozen:password@db:5432/autozen
+    env_file:
+      - .env
     depends_on:
       - db
     restart: always
+    command: sh -c "npx prisma migrate deploy && npm run start"
 
   db:
     image: postgres:16
-    container_name: autozen-db
     restart: always
     environment:
       POSTGRES_USER: autozen
-      POSTGRES_PASSWORD: password
+      POSTGRES_PASSWORD: supersecret123
       POSTGRES_DB: autozen
     volumes:
       - db_data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
-
 volumes:
   db_data:
