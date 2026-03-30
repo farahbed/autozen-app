@@ -15,16 +15,36 @@ export const AuthProvider = ({ children }) => {
     setLoading(false); // ⬅️ fin du chargement
   }, []);
 
-  const login = ({ email, password }) => {
-    if (email === 'test@mail.com' && password === 'azerty') {
-      const fakeUser = { email };
-      localStorage.setItem('user', JSON.stringify(fakeUser));
-      setUser(fakeUser);
-      router.push('/profil');
-    } else {
-      alert('Email ou mot de passe incorrect');
+  const login = async ({ email, password }) => {
+  try {
+    const res = await fetch('/api/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password }),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      alert(data.error || 'Erreur login');
+      return;
     }
-  };
+
+    // 🔐 stocker token
+    localStorage.setItem('token', data.token);
+
+    // stocker user (optionnel mais pratique)
+    const userData = { email };
+    localStorage.setItem('user', JSON.stringify(userData));
+
+    setUser(userData);
+    router.push('/profil');
+
+  } catch (error) {
+    console.error(error);
+    alert('Erreur serveur');
+  }
+};
 
   const logout = () => {
     localStorage.removeItem('user');
