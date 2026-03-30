@@ -6,7 +6,9 @@ import { useAuth } from "@/contexts/AuthContext";
 
 export default function Sidebar() {
   const pathname = usePathname();
-  const { user, logout } = useAuth(); // 👈 On récupère user ici
+  const { user, logout } = useAuth();
+
+  if (!user) return null; // ❌ Si pas connecté, on ne rend rien
 
   const navItems = [
     { href: "/dashboard", label: "Tableau de bord", icon: "🏠" },
@@ -33,14 +35,12 @@ export default function Sidebar() {
           </Link>
         ))}
 
-        {user && ( // ✅ Affiche le bouton uniquement si user est connecté
-          <button
-            onClick={logout}
-            className="mt-8 text-sm text-red-600 hover:underline text-left"
-          >
-            🚪 Se déconnecter
-          </button>
-        )}
+        <button
+          onClick={logout}
+          className="mt-8 text-sm text-red-600 hover:underline text-left"
+        >
+          🚪 Se déconnecter
+        </button>
       </nav>
     </aside>
   );

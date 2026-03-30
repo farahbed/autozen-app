@@ -1,7 +1,6 @@
 'use client';
 import React, { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
-import Link from 'next/link';
 
 export default function LoginPage() {
   const { login } = useAuth();
@@ -15,7 +14,10 @@ export default function LoginPage() {
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <form onSubmit={handleSubmit} className="bg-white shadow-md rounded px-8 pt-6 pb-8 w-full max-w-sm">
+      <form
+        onSubmit={handleSubmit}
+        className="bg-white shadow-md rounded px-8 pt-6 pb-8 w-full max-w-sm"
+      >
         <h2 className="text-2xl font-bold mb-6 text-center">Connexion</h2>
 
         <input
@@ -36,14 +38,18 @@ export default function LoginPage() {
           required
         />
 
-        <button type="submit" className="bg-blue-600 text-white w-full py-2 rounded hover:bg-blue-700">
+        <button
+          type="submit"
+          className="bg-blue-600 text-white w-full py-2 rounded hover:bg-blue-700"
+        >
           Se connecter
         </button>
 
-        <p className="mt-4 text-sm text-center">
-          Pas encore inscrit ?{' '}
-          <Link href="/register" className="text-blue-600 underline">Créer un compte</Link>
-        </p>
+        <div className="text-center mt-4">
+          <a href="/register" className="text-green-600 hover:underline">
+            Pas de compte ? Inscrivez-vous
+          </a>
+        </div>
       </form>
     </div>
   );
