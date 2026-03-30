@@ -6,9 +6,9 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm install
 
-COPY . .  # 🔥 on copie tout AVANT Prisma
+COPY . .
 
-RUN npx prisma generate  # 🔥 maintenant Prisma voit le schema
+RUN npx prisma generate
 RUN npm run build
 
 # Étape 2 : Production
