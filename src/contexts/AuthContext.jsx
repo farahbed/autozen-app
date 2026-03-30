@@ -6,45 +6,31 @@ const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true); // ⬅️ nouveau
+  const [loading, setLoading] = useState(true);
   const router = useRouter();
 
   useEffect(() => {
-    const userData = localStorage.getItem('user');
-    if (userData) setUser(JSON.parse(userData));
-    setLoading(false); // ⬅️ fin du chargement
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) setUser(JSON.parse(storedUser));
+    setLoading(false);
   }, []);
 
-  const login = async ({ email, password }) => {
-  try {
-    const res = await fetch('/api/auth/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password }),
-    });
-
-    const data = await res.json();
-
-    if (!res.ok) {
-      alert(data.error || 'Erreur login');
-      return;
+  const login = ({ email, password }) => {
+    const storedUser = JSON.parse(localStorage.getItem('user'));
+    if (storedUser && storedUser.email === email /* && password check */) {
+      setUser(storedUser);
+      router.push('/dashboard');
+    } else {
+      alert('Email ou mot de passe incorrect');
     }
+  };
 
-    // 🔐 stocker token
-    localStorage.setItem('token', data.token);
-
-    // stocker user (optionnel mais pratique)
-    const userData = { email };
-    localStorage.setItem('user', JSON.stringify(userData));
-
-    setUser(userData);
-    router.push('/profil');
-
-  } catch (error) {
-    console.error(error);
-    alert('Erreur serveur');
-  }
-};
+  const register = ({ email, password, nom }) => {
+    const newUser = { email, password, nom, statut: 'Auto-entrepreneur', dateInscription: new Date().toLocaleDateString() };
+    localStorage.setItem('user', JSON.stringify(newUser));
+    setUser(newUser);
+    router.push('/dashboard');
+  };
 
   const logout = () => {
     localStorage.removeItem('user');
@@ -53,7 +39,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, loading }}>
+    <AuthContext.Provider value={{ user, login, register, logout, loading, setUser }}>
       {children}
     </AuthContext.Provider>
   );

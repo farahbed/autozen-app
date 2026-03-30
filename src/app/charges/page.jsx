@@ -5,6 +5,7 @@ import ProtectedRoute from "@/components/ProtectedRoute";
 
 export default function ChargesPage() {
   return (
+    <ProtectedRoute>
     <div>
       <h1 className="text-2xl font-bold mb-4">Mes Charges</h1>
 
@@ -44,5 +45,6 @@ export default function ChargesPage() {
         </table>
       </div>
     </div>
+    </ProtectedRoute>
   );
 }
