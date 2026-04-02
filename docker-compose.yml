@@ -1,14 +1,15 @@
+version: "3.9"
+
 services:
   app:
     build: .
     ports:
-      - "3001:3000"  # access web app on localhost:3000
+      - "3000:3000"   # localhost:3000 pour accéder à Next.js
     env_file:
       - .env
     depends_on:
       - db
     restart: always
-    command: sh -c "npx prisma migrate deploy && npm run start"
 
   db:
     image: postgres:16
@@ -19,6 +20,6 @@ services:
       POSTGRES_DB: autozen
     volumes:
       - db_data:/var/lib/postgresql/data
-      # pas de port exposé pour la base de données, elle est uniquement accessible depuis l'application
+
 volumes:
   db_data:
