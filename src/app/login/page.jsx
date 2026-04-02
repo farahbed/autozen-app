@@ -1,29 +1,15 @@
 'use client';
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useAuth } from '@/contexts/AuthContext';
 
 export default function LoginPage() {
+  const { login } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const router = useRouter();
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-
-    const res = await fetch('/api/auth/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password }),
-    });
-
-    const data = await res.json();
-
-    if (!res.ok) return alert(data.error || 'Erreur connexion');
-
-    localStorage.setItem('token', data.token);
-    alert('Connexion réussie ✅');
-
-    router.push('/dashboard'); // redirection après connexion
+    login({ email, password }); // utilise la fonction login du context
   };
 
   return (

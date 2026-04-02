@@ -1,38 +1,18 @@
 'use client';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 
 export default function RegisterPage() {
+  const { register } = useAuth();
   const [nom, setNom] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    register({ nom, email, password }); // utilise la fonction register du context
+  };
 
-  try {
-    const res = await fetch('/api/auth/register', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ email, password }),
-    });
-
-    const data = await res.json();
-
-    if (!res.ok) {
-      alert(data.error || "Erreur inscription");
-      return;
-    }
-
-    alert("Compte créé ✅");
-
-  } catch (error) {
-    console.error(error);
-    alert("Erreur serveur");
-  }
-};
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <form
@@ -74,6 +54,12 @@ const handleSubmit = async (e) => {
         >
           S'inscrire
         </button>
+
+        <div className="text-center mt-4">
+          <a href="/login" className="text-blue-600 hover:underline">
+            Déjà un compte ? Connectez-vous
+          </a>
+        </div>
       </form>
     </div>
   );
