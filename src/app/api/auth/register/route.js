@@ -35,3 +35,6 @@ export async function POST(req) {
     });
   }
 }
+
+// ce fichier sert a enregistrer un nouvel utilisateur,
+//  il hash le mot de passe avant de le stocker dans la base de données pour des raisons de sécurité.
