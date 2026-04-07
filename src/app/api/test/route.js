@@ -1,15 +1,13 @@
-import { verifyToken } from '@/lib/auth';
+import jwt from 'jsonwebtoken';
 
-export async function GET(req) {
-  const user = verifyToken(req);
+export function verifyToken(req) {
+  const authHeader = req.headers.get('authorization');
+  if (!authHeader) return null;
 
-  if (!user) {
-    return new Response(JSON.stringify({ error: 'Unauthorized' }), {
-      status: 401,
-    });
+  const token = authHeader.split(' ')[1];
+  try {
+    return jwt.verify(token, process.env.JWT_SECRET);
+  } catch (error) {
+    return null;
   }
-
-  return new Response(JSON.stringify({ message: 'OK tu es connecté 🔐' }), {
-    status: 200,
-  });
 }

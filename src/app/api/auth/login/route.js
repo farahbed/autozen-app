@@ -1,8 +1,6 @@
-import prisma from '@/lib/prisma'; // car lib est maintenant dans src
+import prisma from '@/lib/prisma'; // déjà initialisé via lib/prisma
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-
-const prisma = new PrismaClient();
 
 export async function POST(req) {
   try {
@@ -25,7 +23,6 @@ export async function POST(req) {
     const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
     return new Response(JSON.stringify({ token }), { status: 200 });
-
   } catch (error) {
     console.error(error);
     return new Response(JSON.stringify({ error: 'Erreur serveur' }), { status: 500 });
