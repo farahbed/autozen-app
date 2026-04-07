@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client';
+import prisma from '@/lib/prisma'; // car lib est maintenant dans src
 import bcrypt from 'bcrypt';
 
 const prisma = new PrismaClient();
