@@ -3,9 +3,7 @@ FROM node:20-alpine AS builder
 
 WORKDIR /app
 
-# Copier package.json et package-lock.json / yarn.lock
 COPY package*.json ./
-
 RUN npm install
 
 # Copier tout le projet, y compris prisma/schema.prisma
@@ -25,6 +23,9 @@ WORKDIR /app
 COPY --from=builder /app ./
 
 EXPOSE 3000
+
+# Générer à nouveau le client Prisma (sécurité supplémentaire)
+RUN npx prisma generate
 
 # Déployer les migrations Prisma et démarrer Next.js
 CMD sh -c "npx prisma migrate deploy && npm run start"
