@@ -1,4 +1,5 @@
 'use client';
+
 import { createContext, useContext, useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
@@ -9,50 +10,81 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
-  // Charge l'utilisateur connecté
+  // Charger le token et user au démarrage
   useEffect(() => {
-    const userData = localStorage.getItem('currentUser');
-    if (userData) setUser(JSON.parse(userData));
+    const token = localStorage.getItem('token');
+    const storedUser = localStorage.getItem('currentUser');
+    if (token && storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
     setLoading(false);
   }, []);
 
-  // Login : cherche l'utilisateur dans la liste
-  const login = ({ email, password }) => {
-    const users = JSON.parse(localStorage.getItem('users') || '[]');
-    const existingUser = users.find(u => u.email === email && u.password === password);
+  // Login : appeler l'API
+  const login = async ({ email, password }) => {
+    try {
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
 
-    if (existingUser) {
-      localStorage.setItem('currentUser', JSON.stringify(existingUser));
-      setUser(existingUser);
+      const data = await res.json();
+
+      if (!res.ok) {
+        alert(data.error || 'Email ou mot de passe incorrect');
+        return false;
+      }
+
+      // Stocker le token et l'utilisateur (tu peux aussi récupérer d'autres infos via JWT)
+      localStorage.setItem('token', data.token);
+      localStorage.setItem('currentUser', JSON.stringify({ email })); 
+      setUser({ email });
+
       router.push('/dashboard');
-    } else {
-      alert('Email ou mot de passe incorrect');
+      return true;
+    } catch (error) {
+      console.error(error);
+      alert('Erreur serveur');
+      return false;
     }
   };
 
-  // Logout
+  // Register : appeler l'API
+  const register = async ({ nom, email, password }) => {
+    try {
+      const res = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ nom, email, password }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        alert(data.error || 'Erreur inscription');
+        return false;
+      }
+
+      // Stocker le token et l'utilisateur
+      localStorage.setItem('token', data.token);
+      localStorage.setItem('currentUser', JSON.stringify({ nom, email }));
+      setUser({ nom, email });
+
+      router.push('/dashboard');
+      return true;
+    } catch (error) {
+      console.error(error);
+      alert('Erreur serveur');
+      return false;
+    }
+  };
+
   const logout = () => {
+    localStorage.removeItem('token');
     localStorage.removeItem('currentUser');
     setUser(null);
     router.push('/login');
-  };
-
-  // Register : ajoute un utilisateur
-  const register = ({ nom, email, password }) => {
-    const users = JSON.parse(localStorage.getItem('users') || '[]');
-
-    if (users.find(u => u.email === email)) {
-      alert('Cet email est déjà utilisé');
-      return false;
-    }
-
-    const newUser = { nom, email, password };
-    users.push(newUser);
-    localStorage.setItem('users', JSON.stringify(users));
-    localStorage.setItem('currentUser', JSON.stringify(newUser));
-    setUser(newUser);
-    router.push('/dashboard');
-    return true;
   };
 
   return (
